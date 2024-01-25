@@ -1,0 +1,5 @@
+redhat.vscode-xml
+redhat.ansible
+dhoeric.ansible-vault
+sleistner.vscode-fileutils
+donjayamanne.githistory
