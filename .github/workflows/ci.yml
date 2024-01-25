@@ -14,7 +14,7 @@ on:
   # schedule:
   #   - cron: '30 0 * * 0'
 env:
-  CODE_SERVER_REPOSITORY: codercom/code-server
+  DOCKERHUB_REPOSITORY: thehedhly/code-server
 jobs:
   build:
     strategy:
@@ -39,7 +39,7 @@ jobs:
         id: meta
         uses: docker/metadata-action@v5
         with:
-          images: ${{ env.CODE_SERVER_REPOSITORY }}
+          images: ${{ env.DOCKERHUB_REPOSITORY }}
           labels: |
             org.opencontainers.image.version=${{ matrix.code_server_version }}
             org.opencontainers.image.description=VS Code in the browser with extension support
