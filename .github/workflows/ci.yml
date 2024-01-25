@@ -1,60 +1,57 @@
 ---
 
-  name: ci
-  run-name: Build & push docker images
-  on:
-    workflow_dispatch:
-    push:
-    #   branches:
-    #     - main
-    # pull_request:
-    #   branches:
-    #     - 'main'
-    # Weekly, at 00:30 on Sunday
-    # schedule:
-    #   - cron: '30 0 * * 0'
-
-  env:
-    CODE_SERVER_REPOSITORY: codercom/code-server
-
-  jobs:
-    build:
-      strategy:
-        matrix:
-          code_server_version:
-            - focal
-            - bookworm
-      runs-on: ubuntu-latest
-      steps:
-        - uses: actions/checkout@v4
-        - name: 'Print docker version information'
-          run: |
-            docker --version
-        - name: 'Set up Docker Buildx'
-          uses: docker/setup-buildx-action@v3
-        - name: 'Login to Docker Hub'
-          uses: docker/login-action@v3
-          with:
-            username: ${{ secrets.DOCKERHUB_USERNAME }}
-            password: ${{ secrets.DOCKERHUB_TOKEN }}
-        - name: 'Set Docker meta'
-          id: meta
-          uses: docker/metadata-action@v5
-          with:
-            images: ${{ env.CODE_SERVER_REPOSITORY }}
-            labels: |
-              org.opencontainers.image.version=${{ matrix.code_server_version }}
-              org.opencontainers.image.description=VS Code in the browser with extension support
-            tags: |
-              type=raw,value=${{ matrix.code_server_version}}
-        - name: 'Build and push'
-          uses: docker/build-push-action@v5
-          with:
-            push: true
-            context: .
-            file: Dockerfile
-            tags: ${{ steps.meta.outputs.tags }}
-            labels: ${{ steps.meta.outputs.labels }}
-            build-args: |
-              CODE_SERVER_VERSION=${{ matrix.code_server_version }}
-  
+name: ci
+run-name: Build & push docker images
+on:
+  workflow_dispatch:
+  push:
+  #   branches:
+  #     - main
+  # pull_request:
+  #   branches:
+  #     - 'main'
+  # Weekly, at 00:30 on Sunday
+  # schedule:
+  #   - cron: '30 0 * * 0'
+env:
+  CODE_SERVER_REPOSITORY: codercom/code-server
+jobs:
+  build:
+    strategy:
+      matrix:
+        code_server_version:
+          - focal
+          - bookworm
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: 'Print docker version information'
+        run: |
+          docker --version
+      - name: 'Set up Docker Buildx'
+        uses: docker/setup-buildx-action@v3
+      - name: 'Login to Docker Hub'
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+      - name: 'Set Docker meta'
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: ${{ env.CODE_SERVER_REPOSITORY }}
+          labels: |
+            org.opencontainers.image.version=${{ matrix.code_server_version }}
+            org.opencontainers.image.description=VS Code in the browser with extension support
+          tags: |
+            type=raw,value=${{ matrix.code_server_version}}
+      - name: 'Build and push'
+        uses: docker/build-push-action@v5
+        with:
+          push: true
+          context: .
+          file: Dockerfile
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          build-args: |
+            CODE_SERVER_VERSION=${{ matrix.code_server_version }}
