@@ -4,3 +4,4 @@ redhat.ansible
 dhoeric.ansible-vault
 sleistner.vscode-fileutils
 donjayamanne.githistory
+exiasr.hadolint
